@@ -6,6 +6,7 @@
  
  Group of methods that perform math calculations
  */
+
 import java.text.DecimalFormat;
 import java.util.*;
 
@@ -244,9 +245,11 @@ public class Calculate {
 		int a = Integer.parseInt((stanForm.substring(0, stanForm.indexOf('^') - 1)));
 		int b = Integer.parseInt(stanForm.substring(stanForm.indexOf('+') + 2, stanForm.lastIndexOf('+') - 2));
 		int c = Integer.parseInt(stanForm.substring(stanForm.lastIndexOf(' ') + 1));
+		
 		double dis = discriminant(a, b, c);
 		double minus = ((-b) - sqrt(dis)) / 2 * a;
 		double plus = ((-b) + sqrt(dis)) / 2 * a;
+		
 		if (dis < 0) {
 			return "no real roots";
 		} else {
