@@ -247,13 +247,13 @@ public class Calculate {
 		int c = Integer.parseInt(stanForm.substring(stanForm.lastIndexOf(' ') + 1));
 		
 		double dis = discriminant(a, b, c);
-		double minus = ((-b) - sqrt(dis)) / 2 * a;
-		double plus = ((-b) + sqrt(dis)) / 2 * a;
+		double root1 = ((-b) - sqrt(dis)) / 2 * a;
+		double root2 = ((-b) + sqrt(dis)) / 2 * a;
 		
 		if (dis < 0) {
 			return "no real roots";
 		} else {
-			return minus + ((dis == 0) ? "" : " and " + plus);
+			return root1 + ((dis == 0) ? "" : " and " + root2);
 		}
 	}
 
