@@ -7,82 +7,64 @@
  Group of methods that perform math calculations
  */
 
-import java.text.DecimalFormat;
 import java.util.*;
 
 public class Calculate {
 
-	public static double square(double squared) {
-		return exponent(squared, 2);
+	// Squares any number
+	public static double square(double numToSquare) {
+		return exponent(numToSquare, 2);
 	}
 
-	public static double cube(double cubed) {
-		return exponent(cubed, 3);
+	// Cubes any number
+	public static double cube(double numToCube) {
+		return exponent(numToCube, 3);
 	}
 
-	public static double exponent(double num, double power) {
-		try {
+	// Finds the result of any number to any power
+	public static double exponent(double num, int power) {
+		if (power < 0) {
+			return exponent(1 / num, (int) absValue(power));
+		}
 		double numToPower = num;
-		for (int i = 1; i <= power - 1; i++) {
+		for (int i = 1; i < power; i++) {
 			numToPower *= num;
 		}
 		return numToPower;
-		} catch(NumberFormatException ex) {
-			System.out.println("Enter a valid number.");
-			return 0;
-		}
 	}
 
+	// Finds the closest square root of any number
 	public static double sqrt(double numToRoot) {
-		try {
-			return round2(findRoot(numToRoot, 2));
-		} catch (NumberFormatException ex) {
-			System.out.println("Enter a valid number.");
-			return 0;
+		if (numToRoot < 0) {
+			throw new IllegalArgumentException("Input must be positive");
 		}
+		return findRoot(numToRoot, 2);
 	}
 
-	public static String negRoot(double numToRoot, double rootBy) {
+	// Finds the any root of a negative number
+	public static String negRoot(double numToRoot, int rootBy) {
+		if (numToRoot >= 0) {
+			throw new IllegalArgumentException("Input must be negative");
+		}
 		String negRoot = "" + findRoot(absValue(numToRoot), rootBy);
 		negRoot += " i";
 		return negRoot;
 	}
 
-	public static double findRoot(double numToRoot, double rootBy) {
-		DecimalFormat df = new DecimalFormat("0.0000000");
-		ArrayList<Double> temp = new ArrayList<>();
-
-		boolean foundRoot = false;
-		double squareRoot = 0.0001;
-		double square = 0;
-
-		if (numToRoot == 0) {
-			return numToRoot;
-		} else if (rootBy == 0) {
-			return numToRoot;
+	// Finds any root of any number
+	public static double findRoot(double numToRoot, int rootBy) {
+		if(numToRoot < 0) {
+			throw new IllegalArgumentException("Input must be positive");
 		} else {
-			while (!foundRoot) {
-				squareRoot = Double.parseDouble(df.format(squareRoot));
-				square = squareRoot;
-				square = exponent(squareRoot, rootBy);
-
-				if (square > numToRoot) {
-					foundRoot = true;
-					squareRoot = temp.get(0);
-					square = temp.get(1);
-					break;
-				} else {
-					temp.clear();
-				}
-
-				temp.add(squareRoot);
-				temp.add(square);
-				squareRoot += 0.0001;
-			}
+		double root = 0;
+		while(exponent(root, rootBy) <= numToRoot) {
+			root += 0.001;
 		}
-		return squareRoot;
+		return round2(root);
+		}
 	}
 
+	// Finds the average of a list of numbers
 	public static double average(double[] listToAvg) {
 		double total = 0;
 		for (double num : listToAvg) {
@@ -91,61 +73,71 @@ public class Calculate {
 		return (total / listToAvg.length);
 	}
 
+	// Finds the average of 2 numbers
 	public static double average(double a, double b) {
 		double[] listToAvg = { a, b };
 		return average(listToAvg);
 	}
 
-	public double average(double a, double b, double c) {
+	// Finds the average of 3 numbers
+	public static double average(double a, double b, double c) {
 		double[] listToAvg = { a, b, c };
 		return average(listToAvg);
 	}
 
+	// Finds the absolute value of a number
 	public static double absValue(double num) {
-		return (num < 0) ? -num : num;
+		if (num < 0) {
+			return -num;
+		} else {
+			return num;
+		}
 	}
 
+	// Finds the gcf of 2 numbers
 	public static int gcf(int a, int b) {
 		a = (int) absValue(a);
 		b = (int) absValue(b);
-		int gcd = 1;
-
-		for (int i = 1; i <= a && i <= b; i++) {
-			if (a % i == 0 && b % i == 0) {
-				gcd = i;
+		int gcf = min(a, b);
+		
+		while(gcf > 1) {
+			if (isDivisibleBy(a, gcf) && isDivisibleBy(b, gcf)) {
+				return gcf;
 			}
+			gcf--;
 		}
-		return gcd;
+		return 1;
 	}
 
+	// Converts from radians to degrees
 	public static double toDegrees(double radians) {
 		return radians * (180 / 3.14159);
 	}
 
+	// Converts from degrees to radians
 	public static double toRadians(double degrees) {
 		return degrees / (180 / 3.14159);
 	}
 
+	// Finds the discriminant of a, b, and c
 	public static double discriminant(double a, double b, double c) {
 		return square(b) - (4 * a * c);
 	}
 
-	public static String toImproperFrac(int whole, int num, int den) {
-		Integer improp = (whole * den) + num;
-		return improp.toString() + "/" + den;
+	// Converts a mixed number to an improper fraction
+	public static String toImproperFrac(int whole, int numer, int denom) {
+		int improp = (whole * denom) + numer;
+		return improp + "/" + denom;
 	}
 
-	public static String toMixedNum(int num, int den) {
-		int whole = num;
-		while (whole % den != 0) {
-			whole--;
-		}
-		num -= whole;
-		whole /= den;
-		String mixed = whole + ((num == 0) ? "" : " " + num + "/" + den);
-		return mixed;
+	// Converts an improper fraction to a mixed number
+	public static String toMixedNum(int numer, int denom) {
+		int whole = numer / denom;
+		int remain = numer % denom;
+		return whole + "_" + remain + "/" + denom;
 	}
 
+	// Converts from (a, b)(c, d) to standard form
 	public static String foil(int a, int b, int c, int d, String var) {
 		String part1 = (a * c) + var + "^2";
 		String part2 = " + " + ((a * d) + (b * c)) + var;
@@ -153,15 +145,15 @@ public class Calculate {
 		return part1 + part2 + part3;
 	}
 
+	// Returns true if a divides by b evenly and false if they don't
 	public static boolean isDivisibleBy(int a, int b) {
-		try {
-			return (a % b == 0) ? true : false;
-		} catch (NumberFormatException ex) {
-			System.out.println("Enter a vlid number.");
-			return false;
+		if (a < b) {
+			throw new IllegalArgumentException("First input must be greater than or equal to second input");
 		}
+		return a % b == 0;
 	}
 
+	//Finds max or min depending on a boolean
 	public static double trueForMax(double[] inputList, boolean max) {
 		ArrayList<Double> list = new ArrayList<>();
 		for (int i = 0; i < inputList.length; i++) {
@@ -180,81 +172,88 @@ public class Calculate {
 		return list.get(0);
 	}
 
+	// Finds the maximum of a list
 	public static double max(double[] inputList) {
 		return trueForMax(inputList, true);
 	}
 
+	// Finds the maximum of 2 numbers
 	public static double max(double a, double b) {
 		return max(new double[] { a, b });
 	}
 
+	// Finds the maximum of three numbers
 	public static double max(double a, double b, double c) {
 		return max(new double[] { a, b, c });
 	}
 
+	// Finds the minimum of a list of numbers
 	public static double min(double[] inputList) {
 		return trueForMax(inputList, false);
 	}
 
+	// Finds the minimum of two numbers
 	public static int min(int a, int b) {
 		return (int) min(new double[] { a, b });
 	}
 
+	// Rounds a number depending on which decimal place is chosen
 	public static double round(double a, int decimalPlace) {
 		a *= exponent(10, decimalPlace);
-		String round = "" + a;
-		int roundIf = Integer.parseInt("" + round.charAt(round.indexOf('.') + 1));
-		round = round.substring(0, round.indexOf('.'));
-		a = Double.parseDouble(round);
-		if (roundIf >= 5) {
-			a += (a > 0) ? 1 : -1;
+		if (a < 0) {
+			a -= 0.5;
+		} else {
+			a += 0.5;
 		}
-		return a / exponent(10, decimalPlace);
+		a = (int) a;
+		a /= exponent(10, decimalPlace);
+		return a;
+
 	}
 
+	// Round a number to the 2nd decimal place
 	public static double round2(double a) {
 		return round(a, 2);
 	}
 
+	// Finds the factorial of the number provided
 	public static int factorial(int a) {
-		try {
-			int factorial = 1;
-			for (int i = 1; i <= a; i++) {
-				factorial *= i;
-			}
-			return factorial;
-		} catch (NumberFormatException ex) {
-			System.out.println("Enter a valid number.");
-			return 0;
+		if (a < 0) {
+			throw new IllegalArgumentException("Input must be positive");
 		}
+		int factorial = 1;
+		for (int i = 1; i <= a; i++) {
+			factorial *= i;
+		}
+		return factorial;
 	}
 
+	// Determines whether a number is prime or not
 	public static boolean isPrime(int num) {
-		if (num % 2 == 0) {
-			return (num == 2) ? true : false;
+		if (num <= 2 || isDivisibleBy(num, 2)) {
+			return num == 2;
 		}
-		for (int i = 1; i < num; i += 2) {
-			if (isDivisibleBy(num, i) && i != 1) {
-				return false;
-			}
+		int i = 3;
+		while (!isDivisibleBy(num, i)) {
+			i += 2;
 		}
-		return true;
+		return num == i;
 	}
 
-	public static String quadForm(String stanForm) {
-		int a = Integer.parseInt((stanForm.substring(0, stanForm.indexOf('^') - 1)));
-		int b = Integer.parseInt(stanForm.substring(stanForm.indexOf('+') + 2, stanForm.lastIndexOf('+') - 2));
-		int c = Integer.parseInt(stanForm.substring(stanForm.lastIndexOf(' ') + 1));
-		
+	// Finds the root(s) of a, b, and c if there are any
+	public static String quadForm(int a, int b, int c) {
 		double dis = discriminant(a, b, c);
-		double root1 = ((-b) - sqrt(dis)) / 2 * a;
-		double root2 = ((-b) + sqrt(dis)) / 2 * a;
-		
 		if (dis < 0) {
 			return "no real roots";
-		} else {
-			return root1 + ((dis == 0) ? "" : " and " + root2);
 		}
+
+		double root1 = round2(((-b) - sqrt(dis)) / (2 * a));
+		if (dis == 0) {
+			return root1 + "";
+		}
+
+		double root2 = round2(((-b) + sqrt(dis)) / (2 * a));
+		return root1 + " and " + root2;
 	}
 
 }
