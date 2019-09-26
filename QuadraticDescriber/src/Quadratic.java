@@ -9,21 +9,27 @@ public class Quadratic {
 	 Must return the direction it opens, the vertex, and the intercepts
 	 */
 	public static String quadrDescriber(double a, double b, double c) {
-		String openDirection;
+		String openDirection = "\n\nOpens: ";
 		if(a < 0) {
-			openDirection = "Down";
+			openDirection += "Down";
 		} else {
-			openDirection = "Up";
+			openDirection += "Up";
 		}
 		
 		double vertexX = round2((-b)/(2 * a));
 		double vertexY = round2(a * square(vertexX)) + (b * vertexX) + c;
-		String vertex = "(" + vertexX + ", " + vertexY + ")";
+		String vertex = "\n\nVertex: (" + vertexX + ", " + vertexY + ")";
 		
-		String xIntercepts = quadForm(a, b, c);
-		String equation = "y = " + a + "x^2 + " + b + "x + " + c;
-			
-		return "Description of the graph of:\n" + equation + "\n\nOpening direction: " + openDirection + "\nAxis of Symmetry: " + vertexX + "\nVertex: " + vertex + "\nx-intercept(s): " + xIntercepts + "\ny-intercept: " + c;
+		String xIntercepts = "\nx-intercept(s): " + quadForm(a, b, c);
+		if(xIntercepts.contains("no real roots")) {
+			xIntercepts.replace("no real roots", "None");
+		}
+		String equation = "Description of the graph of:\n y = " + a + "x^2 + " + b + "x + " + c;
+		String yIntercept = "\ny-intercept: " + c;
+		String axis = "\nAxis of Symmetry: " + vertexX;
+		
+		
+		return equation + openDirection + axis + vertex + xIntercepts + yIntercept + "\n";
 	}
 	
 	public static double yValue(double a, double b, double c, double xValue) {
