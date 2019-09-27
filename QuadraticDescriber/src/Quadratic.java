@@ -2,6 +2,7 @@
 Nathan Cohn
 9/17/19
 
+stores all of the equtions required for the quadratic client
 */
 
 public class Quadratic {
@@ -18,7 +19,7 @@ public class Quadratic {
 		
 		double vertexX = round2((-b)/(2 * a));
 		double vertexY = round2(a * square(vertexX)) + (b * vertexX) + c;
-		String vertex = "\n\nVertex: (" + vertexX + ", " + vertexY + ")";
+		String vertex = "\nVertex: (" + vertexX + ", " + vertexY + ")";
 		
 		String xIntercepts = "\nx-intercept(s): " + quadForm(a, b, c);
 		if(xIntercepts.contains("no real roots")) {

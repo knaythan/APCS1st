@@ -32,8 +32,8 @@ public class QuadraticClient {
 					String[] options = { "Equation", "Opening Direction", "Axis of Symmetry", "Vertex", "Intercepts",
 							"All" };
 					System.out.println("What would you like to find?");
-					
-					int selected = getInteger(selection(options));
+
+					int selected = (int) getDouble(selection(options));
 
 					if (selected <= 6 && selected >= 1) {
 						if (selected == 1) {
@@ -41,24 +41,22 @@ public class QuadraticClient {
 						} else if (selected == 2) {
 							System.out.println(openDirection);
 						} else if (selected == 3) {
-							System.out.println(vertex);
-						} else if (selected == 4) {
 							System.out.println(axis);
+						} else if (selected == 4) {
+							System.out.println(vertex);
 						} else if (selected == 5) {
 							System.out.println(intercepts);
 						} else if (selected == 6) {
 							System.out.println(result);
 						}
 						validOption = true;
-					} else {
-						System.out.println("Enter a valid option.");
 					}
 				}
 
 				while (validOption) {
 					String[] endOptions = { "Choose different option", "Enter new values", "Exit" };
 					System.out.println("What would you like to do next?");
-					int selected = getInteger(selection(endOptions));
+					int selected = (int) getDouble(selection(endOptions));
 
 					if (selected <= 4 && selected >= 1) {
 						if (selected == 2) {
@@ -69,8 +67,6 @@ public class QuadraticClient {
 							System.out.println("Goodbye.");
 						}
 						validOption = false;
-					} else {
-						System.out.println("Enter a valid option.");
 					}
 				}
 			}
@@ -78,7 +74,7 @@ public class QuadraticClient {
 
 		scan.close();
 	}
-	
+
 	private static String selection(String[] message) {
 		String output = "";
 		for (int i = 0; i < message.length; i++) {
@@ -92,18 +88,6 @@ public class QuadraticClient {
 		while (true) {
 			try {
 				double scanned = Double.parseDouble(scan.nextLine());
-				return scanned;
-			} catch (NumberFormatException ex) {
-				System.out.print(message);
-			}
-		}
-	}
-	
-	private static int getInteger(String message) {
-		System.out.print(message);
-		while(true) {
-			try {
-				int scanned = Integer.parseInt(scan.nextLine());
 				return scanned;
 			} catch (NumberFormatException ex) {
 				System.out.print(message);
