@@ -21,10 +21,13 @@ public class Quadratic {
 		double vertexY = round2(a * square(vertexX)) + (b * vertexX) + c;
 		String vertex = "\nVertex: (" + vertexX + ", " + vertexY + ")";
 		
-		String xIntercepts = "\nx-intercept(s): " + quadForm(a, b, c);
-		if(xIntercepts.contains("no real roots")) {
-			xIntercepts.replace("no real roots", "None");
+		String xIntercepts = "\nx-intercept(s): ";
+		if(quadForm(a, b, c).equalsIgnoreCase("no real roots")) {
+			xIntercepts += "None";
+		} else {
+			xIntercepts += quadForm(a, b, c);
 		}
+		
 		String equation = "Description of the graph of:\n y = " + a + "x^2 + " + b + "x + " + c;
 		String yIntercept = "\ny-intercept: " + c;
 		String axis = "\nAxis of Symmetry: " + vertexX;

@@ -12,9 +12,9 @@ public class QuadraticClient {
 
 		while (repeat) {
 			System.out.println("Provide values for the co-efficients a, b, and c");
-			double a = getDouble("a: ");
-			double b = getDouble("b: ");
-			double c = getDouble("c: ");
+			double a = getScanner("a: ");
+			double b = getScanner("b: ");
+			double c = getScanner("c: ");
 
 			String result = Quadratic.quadrDescriber(a, b, c);
 
@@ -29,11 +29,10 @@ public class QuadraticClient {
 				boolean validOption = false;
 				while (!validOption) {
 
-					String[] options = { "Equation", "Opening Direction", "Axis of Symmetry", "Vertex", "Intercepts",
-							"All" };
+					String[] options = { "Equation", "Opening Direction", "Axis of Symmetry", "Vertex", "Intercepts", "All" };
 					System.out.println("What would you like to find?");
 
-					int selected = (int) getDouble(selection(options));
+					int selected = (int) getScanner(selection(options));
 
 					if (selected <= 6 && selected >= 1) {
 						if (selected == 1) {
@@ -56,9 +55,9 @@ public class QuadraticClient {
 				while (validOption) {
 					String[] endOptions = { "Choose different option", "Enter new values", "Exit" };
 					System.out.println("What would you like to do next?");
-					int selected = (int) getDouble(selection(endOptions));
+					int selected = (int) getScanner(selection(endOptions));
 
-					if (selected <= 4 && selected >= 1) {
+					if (selected <= 3 && selected >= 1) {
 						if (selected == 2) {
 							newValue = true;
 						} else if (selected == 3) {
@@ -83,14 +82,14 @@ public class QuadraticClient {
 		return output;
 	}
 
-	private static double getDouble(String message) {
+	private static double getScanner(String message) {
 		System.out.print(message);
 		while (true) {
 			try {
 				double scanned = Double.parseDouble(scan.nextLine());
 				return scanned;
 			} catch (NumberFormatException ex) {
-				System.out.print(message);
+				System.out.print("Enter a valid input.\n" + message);
 			}
 		}
 	}
