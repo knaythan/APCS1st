@@ -22,10 +22,11 @@ public class DoMath {
 		System.out.println(Calculate.exponent(3, -2));
 		System.out.println(Calculate.factorial(0));
 		System.out.println(Calculate.isPrime(97));
-		System.out.println(Calculate.gcf(-120, 6));
+		System.out.println(Calculate.gcf(15,0));
 		System.out.println(Calculate.sqrt(1000000));
 		System.out.println(Calculate.quadForm(1, 2, -63));
-		System.out.println(Calculate.sqrt(2147483647));
+		System.out.println(Calculate.sqrt(2));
+		System.out.println(Calculate.negRoot(-1, 2));
 		
 	}
 }

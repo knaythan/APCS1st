@@ -1,0 +1,223 @@
+package fracCalc;
+
+import java.util.*;
+
+public class FracCalc {
+
+	public static void main(String[] args) {
+		Scanner scan = new Scanner(System.in);
+		String input = "";
+		while (!input.equalsIgnoreCase("quit")) {
+			System.out.println("Enter expression below (type 'quit' to quit):");
+			input = scan.nextLine();
+			if (!input.equalsIgnoreCase("quit")) {
+				long start = System.currentTimeMillis();
+				System.out.println(produceAnswer(input.trim()));
+				System.out.println("Memory used: " + (Runtime.getRuntime().totalMemory() / 1024));
+			}
+		}
+		System.out.println("Goodbye.");
+		scan.close();
+	}
+
+	public static String produceAnswer(String input) {
+		String output = "";
+		while (input.contains("(")) {
+			input = parenthesis(input);
+		}
+		if (!testAll(input)) 
+			output = "error";
+		else 
+			output = solve(input);
+		if (!testString(output)) {
+			return "ERROR: Invalid input";
+		}
+		return toPropFrac(output);
+	}
+
+	public static String toPropFrac(String input) {
+		int[] frac = toIntArray(input);
+		if (frac[0] % frac[1] == 0) {
+			return (frac[0] / frac[1]) + "";
+		}
+		int whole = frac[0] / frac[1];
+		if (whole != 0) {
+			return whole + "_" + Math.abs(frac[0] - (whole * frac[1])) + "/" + frac[1];
+		}
+		return frac[0] + "/" + frac[1];
+	}
+
+	public static String solve(String input) {
+		String[] equation = input.split(" ");
+		for (int i = 1; i <= 2; i++) {
+			String test = (i == 1) ? "/*" : "+-";
+			for (int j = 0; j < equation.length; j++) {
+				if (test.contains(equation[j])) {
+					String wholeEquation = equation[j - 1] + " " + equation[j] + " " + equation[j + 1];
+					input = input.replace(wholeEquation, simpleSolve(equation[j - 1], equation[j], equation[j + 1]));
+					equation = input.split(" ");
+					j -= 2;
+				}
+			}
+		}
+		return equation[0];
+	}
+
+	public static String simpleSolve(String op1, String operator, String op2) {
+		int[] frac1 = toIntArray(op1);
+		int[] frac2 = toIntArray(op2);
+		if ("+-".contains(operator)) {
+			return addSub(frac1, frac2, operator);
+		} else {
+			return multDiv(frac1, frac2, operator);
+		}
+	}
+
+	public static String parenthesis(String input) {
+		String equation = getPair(input);
+		if (equation.equals("error")) {
+			return equation;
+		}
+		String output = input.replace(equation, produceAnswer(equation.replace("(", "").replace(")", "")));
+		return output;
+	}
+
+	public static String getPair(String input) {
+		int beginOfPair = -1, endOfPair = -1;
+		for (int i = 0; i < input.length() && endOfPair == -1; i++) {
+			if (input.charAt(i) == '(') {
+				beginOfPair = i;
+			} else if (input.charAt(i) == ')') {
+				endOfPair = i;
+			}
+		}
+		if (endOfPair < 0 || beginOfPair < 0) {
+			return "error";
+		}
+		return input.substring(beginOfPair, endOfPair + 1);
+	}
+
+	public static String toImpropFrac(int numer, int denom) {
+		int gcf = gcf(numer, denom);
+		return (numer / gcf) + "/" + (denom / gcf);
+	}
+
+	public static int gcf(int a, int b) {
+		a = (int) Math.abs(a);
+		b = (int) Math.abs(b);
+		int gcf = Math.min(a, b);
+
+		while (gcf > 1) {
+			if (a % gcf == 0 && b % gcf == 0) {
+				return gcf;
+			}
+			gcf--;
+		}
+		return 1;
+	}
+
+	public static int[] toIntArray(String input) {
+		int whole = 0;
+		if (input.contains("_")) {
+			String[] split = input.split("_");
+			input = input.replace(split[0] + "_", "");
+			whole = Integer.parseInt(split[0]);
+		}
+		int[] impropFrac = { 0, 1 };
+		String[] split = input.split("/");
+		impropFrac[0] = Integer.parseInt(split[0]);
+		if (split.length != 1) {
+			impropFrac[1] = Integer.parseInt(split[1]);
+		}
+		if (whole != 0) {
+			impropFrac[0] += (Math.abs(whole) * impropFrac[1]);
+			if (whole < 0) {
+				impropFrac[0] *= -1;
+			}
+		}
+		return impropFrac;
+	}
+
+	public static String addSub(int[] frac1, int[] frac2, String operator) {
+		if (operator.equals("-")) {
+			frac2[0] *= -1;
+		}
+		int numer = (frac1[0] * frac2[1]) + (frac2[0] * frac1[1]);
+		int denom = frac1[1] * frac2[1];
+		return toImpropFrac(numer, denom);
+	}
+
+	public static String multDiv(int[] frac1, int[] frac2, String operator) {
+		if (operator.equals("/")) {
+			int temp = frac2[0];
+			frac2[0] = frac2[1];
+			frac2[1] = temp;
+			if (temp < 0) {
+				frac2[0] *= -1;
+				frac2[1] *= -1;
+			}
+		}
+		int numer = frac1[0] * frac2[0];
+		int denom = frac1[1] * frac2[1];
+		return toImpropFrac(numer, denom);
+	}
+
+	public static boolean testAll(String input) {
+		String[] split = input.split(" ");
+		if (split.length % 2 == 0 || split.length < 3) {
+			return false;
+		}
+		for (int i = 0; i < split.length; i += 2) {
+			if (!testString(split[i]))
+				return false;
+			if (i != split.length - 1) {
+				String operators = "+-/*";
+				if (!operators.contains(split[i + 1]) || split[i + 1].length() != 1)
+					return false;
+			}
+		}
+		return true;
+	}
+
+	public static boolean testString(String input) {
+		input = input.replace("-0", "0");
+		String[] split = input.replace("_", " ").replace("/", " ").split(" ");
+		String frac = "";
+		for (int i = 1; i <= split.length; i++) {
+			if (!isInt(split[split.length - i])) {
+				return false;
+			}
+			int place = Integer.parseInt(split[split.length - i]);
+			if ((i != split.length && place < 0) || (i + 1 == split.length && place <= 0)) {
+				return false;
+			}
+			String op = "";
+			if (i == 2) {
+				op = "/";
+			} else if (i == 3) {
+				op = "_";
+			}
+			frac = place + op + frac;
+		}
+		if (!input.equals(frac)) {
+			return false;
+		}
+		return true;
+	}
+
+	public static boolean isInt(String input) {
+		if (input.equals("")) return false;
+		if (input.contains("-")) {
+			if (input.indexOf("-") > 0)
+				return false;
+			input = input.substring(1);
+		}
+		char[] list = input.toCharArray();
+		for (char c : list) {
+			if (!Character.isDigit(c)) {
+				return false;
+			}
+		}
+		return true;
+	}
+}

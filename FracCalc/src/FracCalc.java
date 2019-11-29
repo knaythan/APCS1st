@@ -1,55 +1,14 @@
-import java.util.ArrayList;
+import java.util.*;
 
 public class FracCalc { 
-	public static double absValue(double num) {
-		if (num < 0) {
-			return -num;
-		} else {
-			return num;
-		}
-	}
-	public static boolean isDivisibleBy(int a, int b) {
-		if (a < b) {
-			throw new IllegalArgumentException("First input must be greater than or equal to second input");
-		}
-		return a % b == 0;
-	}
-	public static double trueForMax(double[] inputList, boolean max) {
-		ArrayList<Double> list = new ArrayList<>();
-		for (int i = 0; i < inputList.length; i++) {
-			list.add(inputList[i]);
-		}
-
-		int a = 0;
-		int b = 1;
-		while (list.size() != 1) {
-			if (list.get(a) > list.get(b)) {
-				list.remove((max) ? b : a);
-			} else {
-				list.remove((max) ? a : b);
-			}
-		}
-		return list.get(0);
-	}
-	public static double max(double[] inputList) {
-		return trueForMax(inputList, true);
-	}
-	public static double max(double a, double b) {
-		return max(new double[] { a, b });
-	}
-	public static double min(double[] inputList) {
-		return trueForMax(inputList, false);
-	}
-	public static int min(int a, int b) {
-		return (int) min(new double[] { a, b });
-	}
+	
 	public static int gcf(int a, int b) {
-		a = (int) absValue(a);
-		b = (int) absValue(b);
-		int gcf	= min(a, b);
+		a = (int) Math.abs(a);
+		b = (int) Math.abs(b);
+		int gcf	= Math.min(a, b);
 
 		while (gcf > 1) {
-			if (isDivisibleBy(a, gcf) && isDivisibleBy(b, gcf)) {
+			if (a % gcf == 0 && b % gcf == 0) {
 				return gcf;
 			}
 			gcf--;
@@ -82,7 +41,19 @@ public class FracCalc {
 		frac2.setNumer(-frac2.getNumer());
 		return addFrac(frac1, frac2);
 		
-	}	
+	}
+	public static ImpropFrac multiplyFrac(ImpropFrac frac1, ImpropFrac frac2) {
+		int numer = frac1.getNumer() * frac2.getNumer();
+		int denom = frac1.getDenom() * frac2.getDenom();
+		ImpropFrac frac = new ImpropFrac(numer, denom);
+		return frac;
+	}
+	public static ImpropFrac divideFrac(ImpropFrac frac1, ImpropFrac frac2) {
+		int numer = frac2.getNumer();
+		frac2.setNumer(frac2.getDenom());
+		frac2.setDenom(numer);
+		return multiplyFrac(frac1, frac2);
+	}
 	public static ImpropFrac decToFrac(double x) {
 		if (x < 0) {
 			ImpropFrac frac = decToFrac(-x);

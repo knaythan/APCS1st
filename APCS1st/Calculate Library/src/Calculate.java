@@ -121,7 +121,7 @@ public class Calculate {
 
 	// Finds the discriminant of a, b, and c
 	public static double discriminant(double a, double b, double c) {
-		return (b * b) - (4 * a * c);
+		return square(b) - (4 * a * c);
 	}
 
 	// Converts a mixed number to an improper fraction
